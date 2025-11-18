@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EV Charging Dashboard</title>
+  <link rel="stylesheet" href="css.css">
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f9;
+      margin: 0;
+      padding: 0;
+    }
+
+    .header {
+      background: #2c3e50;
+      color: white;
+      padding: 20px 30px;
+      font-size: 26px;
+      font-weight: bold;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+
+    .card {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      margin-bottom: 30px;
+    }
+
+    .card h2 {
+      margin-top: 0;
+      color: #2c3e50;
+    }
+
+    form input {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0 15px 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+
+    form button {
+      width: 100%;
+      background: #3498db;
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    form button:hover {
+      background: #2980b9;
+    }
+
+    .link-btn {
+      display: inline-block;
+      background: #27ae60;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 16px;
+      margin-top: 15px;
+    }
+
+    .link-btn:hover {
+      background: #1e8449;
+    }
+
+    #registerResult, #loginResult {
+      margin-top: 10px;
+      padding: 15px;
+      border-radius: 8px;
+      background: #ecf0f1;
+      font-size: 14px;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="header">EV Charging System Dashboard</div>
+
+<div class="container">
+
+  <!-- Register -->
+  <div class="card">
+    <h2>Register User</h2>
+    <form id="registerForm">
+      <input name="fname" placeholder="First Name" required>
+      <input name="lname" placeholder="Last Name" required>
+      <input name="email" type="email" placeholder="Email" required>
+      <input name="password" type="password" placeholder="Password" required>
+      <input name="phone" placeholder="Phone">
+
+      <!-- FIX: button type="submit" MUST be present -->
+      <button type="submit">Register</button>
+    </form>
+    <div id="registerResult"></div>
+  </div>
+
+  <!-- Login -->
+  <div class="card">
+    <h2>User Login</h2>
+    <form id="loginForm">
+      <input name="email" type="email" placeholder="Email" required>
+      <input name="password" type="password" placeholder="Password" required>
+
+      <!-- FIX: button type="submit" MUST be present -->
+      <button type="submit">Login</button>
+    </form>
+    <div id="loginResult"></div>
+  </div>
+
+  <a href="views.html" class="link-btn">Go to SQL Report Views →</a>
+
+</div>
+
+<!-- FIX: Ensure JS is loaded after page -->
+<script src="app.js"></script>
+
+</body>
+</html>

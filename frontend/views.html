@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EV Charging Analytics Reports</title>
+
+  <link rel="stylesheet" href="css.css">
+
+  <style>
+    nav {
+      background: #1f3341;
+      padding: 18px 40px;
+      color: white;
+      font-size: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logout-btn {
+      background: #ff4d4d;
+      border: none;
+      color: white;
+      padding: 10px 18px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 6px;
+    }
+
+    .logout-btn:hover {
+      background: #d93636;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    th, td {
+      padding: 10px;
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+
+    th {
+      background: #1f3341;
+      color: white;
+    }
+
+    .no-data {
+      margin-top: 20px;
+      padding: 10px;
+      background: #f8d7da;
+      color: #842029;
+      border-radius: 6px;
+      border: 1px solid #f5c2c7;
+    }
+  </style>
+</head>
+
+<body>
+
+<nav>
+  <span>EV Charging Analytics Reports</span>
+  <button class="logout-btn" onclick="logout()">Logout</button>
+</nav>
+
+<div class="container">
+  <div class="card">
+    <h2>Select Report View</h2>
+
+    <select id="viewSelect" class="input-field">
+      <option value="session-details">Session Details</option>
+      <option value="max-avg-rate">Max Avg Operator Rate</option>
+      <option value="reservations-session">Reservations with Session</option>
+      <option value="pricing-full">Pricing Full</option>
+      <option value="resources">Available Resources</option>
+      <option value="station-util">Station Utilization</option>
+      <option value="user-total-paid">User Total Paid</option>
+      <option value="future-res-details">Future Reservations Detail</option>
+      <option value="charger-status">Charger Status Summary</option>
+      <option value="session-cost-rate">Session Cost vs Rate</option>
+      <option value="user-compatible">User Compatible Chargers</option>
+      <option value="vacancy">Station Vacancy</option>
+      <option value="next-available">Next Available per Station</option>
+      <option value="reliability">Station Reliability</option>
+    </select>
+
+    <button onclick="loadView()" class="load-btn">Load Report</button>
+
+    <div id="table-container"></div>
+  </div>
+</div>
+
+<script>
+  function loadView() {
+    const view = document.getElementById("viewSelect").value;
+
+    fetch(`http://localhost:3000/api/views/${view}`)
+            .then(res => res.json())
+            .then(data => {
+              if (!Array.isArray(data) || data.length === 0) {
+                document.getElementById("table-container").innerHTML =
+                        `<div class="no-data">No data available for this view.</div>`;
+                return;
+              }
+
+              // Build table
+              let tableHTML = "<table><thead><tr>";
+
+              // Table headers
+              Object.keys(data[0]).forEach(key => {
+                tableHTML += `<th>${key}</th>`;
+              });
+
+              tableHTML += "</tr></thead><tbody>";
+
+              // Table rows
+              data.forEach(row => {
+                tableHTML += "<tr>";
+                Object.values(row).forEach(value => {
+                  tableHTML += `<td>${value}</td>`;
+                });
+                tableHTML += "</tr>";
+              });
+
+              tableHTML += "</tbody></table>";
+
+              document.getElementById("table-container").innerHTML = tableHTML;
+            })
+            .catch(() => {
+              document.getElementById("table-container").innerHTML =
+                      `<div class="no-data">Error loading view.</div>`;
+            });
+  }
+
+  function logout() {
+    fetch("http://localhost:3000/api/users/logout", { method: "POST" })
+            .then(() => window.location.href = "index.html")
+            .catch(() => alert("Error logging out"));
+  }
+</script>
+
+</body>
+</html>
