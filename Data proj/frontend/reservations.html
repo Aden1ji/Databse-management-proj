@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Book Reservation - EV Charging</title>
+  <link rel="stylesheet" href="css.css">
+</head>
+<body>
+
+<h1>Book Reservation</h1>
+
+<nav>
+  <a href="index.html">Login/Register</a> |
+  <a href="dashboard.html">Dashboard</a> |
+  <a href="stations.html">Manage Stations</a> |
+  <a href="reservations.html">Book Reservation</a> |
+  <a href="sessions.html">Charging Sessions</a> |
+  <a href="views.html">Reports</a>
+</nav>
+
+<h2>Create New Reservation</h2>
+<form id="reservationForm">
+  <input type="hidden" id="reservationId" name="id">
+  <select id="userId" name="user_id" required>
+    <option value="">Select User</option>
+  </select>
+  <select id="chargerId" name="charger_id" required>
+    <option value="">Select Charger</option>
+  </select>
+  <input type="datetime-local" id="startTime" name="startt" required>
+  <input type="datetime-local" id="endTime" name="endt" required>
+  <select name="status">
+    <option value="Reserved">Reserved</option>
+    <option value="Cancelled">Cancelled</option>
+  </select>
+  <button type="submit" id="submitBtn">Create Reservation</button>
+  <button type="button" id="cancelBtn" onclick="cancelEdit()" style="display:none;">Cancel</button>
+</form>
+<div id="formResult"></div>
+
+<h2>Future Reservations</h2>
+<button onclick="loadFutureReservations()">Refresh Reservations</button>
+<div id="futureReservations"></div>
+
+<h2>All Reservations</h2>
+<button onclick="loadAllReservations()">Refresh All</button>
+<div id="allReservations"></div>
+
+<script src="api.js"></script>
+<script src="reservations.js"></script>
+</body>
+</html>
+

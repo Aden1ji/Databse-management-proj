@@ -85,3 +85,32 @@ async function logoutUser() {
   });
 }
 
+// Reservation API functions (to be implemented in backend)
+async function createReservation(data) {
+  return fetchAPI('/reservations', {
+    method: 'POST',
+    body: JSON.stringify(data)
+  });
+}
+
+async function getReservations() {
+  return fetchAPI('/reservations');
+}
+
+async function getReservation(id) {
+  return fetchAPI(`/reservations/${id}`);
+}
+
+async function updateReservation(id, data) {
+  return fetchAPI(`/reservations/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(data)
+  });
+}
+
+async function deleteReservation(id) {
+  return fetchAPI(`/reservations/${id}`, {
+    method: 'DELETE'
+  });
+}
+
