@@ -83,16 +83,12 @@ async function handleReservationSubmit() {
   };
   
   try {
-    // Note: This will need a reservation API endpoint
-    // For now, show a message that backend API is needed
-    resultDiv.innerHTML = '<p style="color: orange;">Reservation API endpoint not yet implemented. Backend route needed: POST /api/reservations</p>';
-    
-    // When API is available, uncomment this:
-    /*
     if (reservationId) {
+      // Update existing reservation
       await updateReservation(reservationId, data);
       resultDiv.innerHTML = '<p style="color: green;">Reservation updated successfully!</p>';
     } else {
+      // Create new reservation
       await createReservation(data);
       resultDiv.innerHTML = '<p style="color: green;">Reservation created successfully!</p>';
     }
@@ -103,7 +99,10 @@ async function handleReservationSubmit() {
     document.getElementById('cancelBtn').style.display = 'none';
     await loadFutureReservations();
     await loadAllReservations();
-    */
+    
+    setTimeout(() => {
+      resultDiv.innerHTML = '';
+    }, 3000);
   } catch (error) {
     console.error('Error saving reservation:', error);
     resultDiv.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
@@ -131,7 +130,9 @@ async function loadFutureReservations() {
         <td>${formatDateTime(res.endt)}</td>
         <td>${res.status}</td>
         <td>
+          <button onclick="editReservation(${res.res_id})">Edit</button>
           <button onclick="cancelReservation(${res.res_id}, '${res.status}')">Cancel</button>
+          <button onclick="deleteReservationConfirm(${res.res_id})">Delete</button>
         </td>
       </tr>`;
     });
@@ -179,6 +180,38 @@ function formatDateTime(dateTimeString) {
   return date.toLocaleString();
 }
 
+async function editReservation(id) {
+  try {
+    const reservation = await getReservation(id);
+    const form = document.getElementById('reservationForm');
+    
+    // Populate form with reservation data
+    document.getElementById('reservationId').value = reservation.res_id;
+    document.getElementById('userId').value = reservation.user_id;
+    document.getElementById('chargerId').value = reservation.charger_id;
+    
+    // Convert MySQL datetime to datetime-local format
+    const startDate = new Date(reservation.startt);
+    const endDate = new Date(reservation.endt);
+    const startLocal = startDate.toISOString().slice(0, 16);
+    const endLocal = endDate.toISOString().slice(0, 16);
+    
+    document.getElementById('startTime').value = startLocal;
+    document.getElementById('endTime').value = endLocal;
+    form.querySelector('[name="status"]').value = reservation.status;
+    
+    // Change button text and show cancel
+    document.getElementById('submitBtn').textContent = 'Update Reservation';
+    document.getElementById('cancelBtn').style.display = 'inline-block';
+    
+    // Scroll to form
+    form.scrollIntoView({ behavior: 'smooth' });
+  } catch (error) {
+    console.error('Error loading reservation:', error);
+    alert('Error loading reservation: ' + error.message);
+  }
+}
+
 function cancelEdit() {
   const form = document.getElementById('reservationForm');
   form.reset();
@@ -188,6 +221,22 @@ function cancelEdit() {
   document.getElementById('formResult').innerHTML = '';
   loadUsers();
   loadChargers();
+}
+
+async function deleteReservationConfirm(id) {
+  if (!confirm('Are you sure you want to delete this reservation? This action cannot be undone.')) {
+    return;
+  }
+  
+  try {
+    await deleteReservation(id);
+    alert('Reservation deleted successfully!');
+    await loadFutureReservations();
+    await loadAllReservations();
+  } catch (error) {
+    console.error('Error deleting reservation:', error);
+    alert('Error deleting reservation: ' + error.message);
+  }
 }
 
 async function cancelReservation(resId, currentStatus) {
@@ -201,16 +250,15 @@ async function cancelReservation(resId, currentStatus) {
   }
   
   try {
-    // Note: This will need a reservation API endpoint
-    alert('Cancel reservation API endpoint not yet implemented. Backend route needed: PUT /api/reservations/:id with status=Cancelled');
-    
-    // When API is available, uncomment this:
-    /*
-    await updateReservation(resId, { status: 'Cancelled' });
+    // Get the full reservation first to preserve other fields
+    const reservation = await getReservation(resId);
+    await updateReservation(resId, { 
+      ...reservation,
+      status: 'Cancelled' 
+    });
     alert('Reservation cancelled successfully!');
     await loadFutureReservations();
     await loadAllReservations();
-    */
   } catch (error) {
     console.error('Error cancelling reservation:', error);
     alert('Error cancelling reservation: ' + error.message);
