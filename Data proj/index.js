@@ -48,6 +48,9 @@ app.use('/api/export', exportRoutes);
 const viewRoutes = require("./routes/viewRoutes");
 app.use("/api/views", viewRoutes);
 
+const sessionRoutes = require('./routes/sessionRoutes');
+app.use('/api/sessions', sessionRoutes);
+
 app.get('/', (req, res) => {
   res.send('EV Charging API is running');
 });

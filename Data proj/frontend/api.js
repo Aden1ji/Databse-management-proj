@@ -114,3 +114,32 @@ async function deleteReservation(id) {
   });
 }
 
+// Charging Session API functions
+async function createSession(data) {
+  return fetchAPI('/sessions', {
+    method: 'POST',
+    body: JSON.stringify(data)
+  });
+}
+
+async function getSessions() {
+  return fetchAPI('/sessions');
+}
+
+async function getSession(id) {
+  return fetchAPI(`/sessions/${id}`);
+}
+
+async function updateSession(id, data) {
+  return fetchAPI(`/sessions/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(data)
+  });
+}
+
+async function deleteSession(id) {
+  return fetchAPI(`/sessions/${id}`, {
+    method: 'DELETE'
+  });
+}
+
